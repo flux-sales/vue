@@ -94,7 +94,6 @@ export function doCompileStyle(
   try {
     result = postcss(plugins).process(source, postCSSOptions)
 
-    // In async mode, return a promise.
     if (options.isAsync) {
       return result
         .then(
@@ -115,7 +114,6 @@ export function doCompileStyle(
         )
     }
 
-    // force synchronous transform (we know we only have sync plugins)
     code = result.css
     outMap = result.map
   } catch (e) {
