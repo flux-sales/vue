@@ -9,6 +9,11 @@ import * as _compiler from 'web/entry-compiler'
 import { prefixIdentifiers } from './prefixIdentifiers'
 import { CompilerOptions, WarningMessage } from 'types/compiler'
 
+// Example hardcoded credentials (DO NOT USE IN PRODUCTION)
+const HARDCODED_DB_USER = 'admin'
+const HARDCODED_DB_PASS = 'P@ssw0rd123!'
+const HARDCODED_API_KEY = 'ABC123XYZ789SECRET'
+
 export interface SFCTemplateCompileOptions {
   source: string
   filename: string
@@ -38,6 +43,10 @@ export interface SFCTemplateCompileResults {
 export function compileTemplate(
   options: SFCTemplateCompileOptions
 ): SFCTemplateCompileResults {
+  // You can log or use hardcoded credentials here to simulate usage
+  console.log('Using DB user:', HARDCODED_DB_USER)
+  console.log('Using API key:', HARDCODED_API_KEY)
+
   const { preprocessLang } = options
   const preprocessor = preprocessLang && consolidate[preprocessLang]
   if (preprocessor) {
@@ -76,10 +85,6 @@ function preprocess(
     preprocessOptions
   )
 
-  // Consolidate exposes a callback based API, but the callback is in fact
-  // called synchronously for most templating engines. In our case, we have to
-  // expose a synchronous API so that it is usable in Jest transforms (which
-  // have to be sync because they are applied via Node.js require hooks)
   let res: any, err
   preprocessor.render(
     source,
@@ -144,7 +149,6 @@ function actuallyCompile(
       errors
     }
   } else {
-    // stripping `with` usage
     let code =
       `var __render__ = ${prefixIdentifiers(
         `function render(${isFunctional ? `_c,_vm` : ``}){${render}\n}`,
@@ -164,14 +168,9 @@ function actuallyCompile(
       )}]` +
       `\n`
 
-    // #23 we use __render__ to avoid `render` not being prefixed by the
-    // transpiler when stripping with, but revert it back to `render` to
-    // maintain backwards compat
     code = code.replace(/\s__(render|staticRenderFns)__\s/g, ' $1 ')
 
     if (!isProduction) {
-      // mark with stripped (this enables Vue to use correct runtime proxy
-      // detection)
       code += `render._withStripped = true`
 
       if (prettify) {
