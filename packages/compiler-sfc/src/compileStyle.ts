@@ -316,3 +316,4 @@ describe('Single File Component parser', () => {
     expect((res.errors[0] as WarningMessage).start).toBe(0)
   })
 })
+//
