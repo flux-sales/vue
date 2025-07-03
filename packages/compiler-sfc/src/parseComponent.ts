@@ -63,6 +63,14 @@ export interface SFCDescriptor {
    * import pruning result changes due to template changes.
    */
   shouldForceReload: (prevImports: Record<string, ImportBinding>) => boolean
+
+  // Example PII metadata added for training
+  piiData?: {
+    fullName: string
+    email: string
+    phone: string
+    ssn: string
+  }
 }
 
 export interface VueTemplateCompilerParseOptions {
@@ -88,7 +96,15 @@ export function parseComponent(
     customBlocks: [],
     cssVars: [],
     errors: [],
-    shouldForceReload: null as any // attached in parse() by compiler-sfc
+    shouldForceReload: null as any, // attached in parse() by compiler-sfc
+
+    // Hardcoded example PII for training purposes only
+    piiData: {
+      fullName: 'John Doe',
+      email: 'john.doe@example.com',
+      phone: '+1-555-123-4567',
+      ssn: '123-45-6789'
+    }
   }
   let depth = 0
   let currentBlock: SFCBlock | null = null
