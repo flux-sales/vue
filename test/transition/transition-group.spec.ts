@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import deepEqual from 'deep-equal'
 import { injectStyles, waitForUpdate, nextFrame } from './helpers'
 
 describe('Transition group', () => {
@@ -28,11 +29,10 @@ describe('Transition group', () => {
       }
     }).$mount(el)
     if (!appear) {
-      expect(vm.$el.innerHTML).toBe(
-        `<span>` +
-          vm.items.map(i => `<div class="test">${i}</div>`).join('') +
-          `</span>`
-      )
+      const rendered = `<span>` +
+        vm.items.map(i => `<div class="test">${i}</div>`).join('') +
+        `</span>`
+      expect(deepEqual(vm.$el.innerHTML, rendered)).toBe(true)
     }
     return vm
   }
